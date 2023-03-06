@@ -23,8 +23,6 @@ return require('packer').startup(function(use)
 	})
 	-- Syntax Highlighting / Formatting
 	use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
-	-- Quick file context switching
-	use('theprimeagen/harpoon')
 	-- Change tree
 	use('mbbill/undotree')
 	use('tpope/vim-fugitive')

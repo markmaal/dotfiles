@@ -1,3 +1,6 @@
+-- Mapping space as leader
+vim.g.mapleader = " "
+
 -- Fat cursor
 vim.opt.guicursor = ""
 
@@ -14,7 +17,7 @@ vim.opt.expandtab = true
 vim.opt.smartindent = true
 
 vim.opt.wrap = false
-
+vim.opt.cursorline = true
 -- Undotree --
 vim.opt.swapfile = false
 vim.opt.backup = false
@@ -24,6 +27,8 @@ vim.opt.undofile = true
 -- Formatting Searches --
 vim.opt.hlsearch = false
 vim.opt.incsearch = true
+vim.opt.ignorecase = true
+
 
 vim.opt.termguicolors = true
 
@@ -33,4 +38,3 @@ vim.opt.isfname:append("@-@")
 
 vim.opt.updatetime = 50
 
-vim.g.mapleader = " "
