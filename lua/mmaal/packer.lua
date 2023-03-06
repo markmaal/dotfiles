@@ -25,8 +25,13 @@ return require('packer').startup(function(use)
 	use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
 	-- Change tree
 	use('mbbill/undotree')
+    -- Git Support
 	use('tpope/vim-fugitive')
-
+    -- Buffer-level git signs
+    use {
+        'lewis6991/gitsigns.nvim',
+        -- tag = 'release' -- To use the latest release (do not use this if you run Neovim nightly or dev builds!)
+    }
     -- LSP autocomplete, definition lookups, the good good
 	use {
 		'VonHeikemen/lsp-zero.nvim',
@@ -54,5 +59,44 @@ return require('packer').startup(function(use)
     use {
         'nvim-lualine/lualine.nvim',
         requires = { 'kyazdani42/nvim-web-devicons', opt = true }
+    }
+    use 'nvim-tree/nvim-web-devicons'
+    use {
+        'glepnir/dashboard-nvim',
+        event = 'VimEnter',
+        config = function()
+            require('dashboard').setup {
+                theme = 'hyper',
+                config = {
+                    week_header = {
+                        enable = true,
+                    },
+                    shortcut = {
+                        { desc = ' Update', group = '@property', action = 'Lazy update', key = 'u' },
+                        {
+                            icon = ' ',
+                            icon_hl = '@variable',
+                            desc = 'Files',
+                            group = 'Label',
+                            action = 'Telescope find_files',
+                            key = 'f',
+                        },
+                        {
+                            desc = ' Apps',
+                            group = 'DiagnosticHint',
+                            action = 'Telescope app',
+                            key = 'a',
+                        },
+                        {
+                            desc = ' dotfiles',
+                            group = 'Number',
+                            action = 'Telescope dotfiles',
+                            key = 'd',
+                        },
+                    },
+                },
+            }
+        end,
+        requires = {'nvim-tree/nvim-web-devicons'}
     }
 end)
