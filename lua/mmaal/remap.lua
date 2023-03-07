@@ -58,6 +58,13 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", opts)
 -- Stop yank filling buffer
 vim.keymap.set("v", "p", "\"_dP", opts)
 
+-- Yank into system register
+vim.keymap.set("n", "<leader>y", "\"+y")
+vim.keymap.set("v", "<leader>y", "\"+y")
+vim.keymap.set("n", "<leader>Y", "\"+Y")
 -- Keep search terms in the middle
 vim.keymap.set("n", "n", "nzzzv", opts)
 vim.keymap.set("n", "N", "Nzzzv", opts)
+
+-- Keep cursor left aligned when appending next line
+vim.keymap.set("n", "J", "mzJ`z", opts)
