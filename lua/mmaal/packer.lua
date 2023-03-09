@@ -13,14 +13,10 @@ return require('packer').startup(function(use)
 		requires = { {'nvim-lua/plenary.nvim'} }
 	}
 	-- Theme
-	use({
-		'rose-pine/neovim',
-		as = 'rose-pine',
-		config = function()
-			require("rose-pine").setup()
-			vim.cmd('colorscheme rose-pine')
-		end
-	})
+    use({
+        'rose-pine/neovim',
+        as = 'rose-pine',
+    })
 	-- Syntax Highlighting / Formatting
 	use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
 	-- Change tree
@@ -38,7 +34,6 @@ return require('packer').startup(function(use)
 		branch = 'v1.x',
 		requires = {
 			-- LSP Support
-			{'neovim/nvim-lspconfig'},             -- Required
 			{'williamboman/mason.nvim'},           -- Optional
 			{'williamboman/mason-lspconfig.nvim'}, -- Optional
 
@@ -63,5 +58,4 @@ return require('packer').startup(function(use)
     use 'nvim-tree/nvim-web-devicons'
     use 'sharkdp/fd'
     use 'glepnir/dashboard-nvim'
-    use 'fatih/vim-go'
 end)
