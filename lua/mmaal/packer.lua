@@ -28,28 +28,34 @@ return require('packer').startup(function(use)
         'lewis6991/gitsigns.nvim',
         -- tag = 'release' -- To use the latest release (do not use this if you run Neovim nightly or dev builds!)
     }
-    -- LSP autocomplete, definition lookups, the good good
-	use {
-		'VonHeikemen/lsp-zero.nvim',
-		branch = 'v1.x',
-		requires = {
-			-- LSP Support
-			{'williamboman/mason.nvim'},           -- Optional
-			{'williamboman/mason-lspconfig.nvim'}, -- Optional
+    use {
+        'numToStr/Comment.nvim',
+        config = function()
+            require('Comment').setup()
+        end
+    }
 
-			-- Autocompletion
-			{'hrsh7th/nvim-cmp'},         -- Required
-			{'hrsh7th/cmp-nvim-lsp'},     -- Required
-			{'hrsh7th/cmp-buffer'},       -- Optional
-			{'hrsh7th/cmp-path'},         -- Optional
-			{'saadparwaiz1/cmp_luasnip'}, -- Optional
-			{'hrsh7th/cmp-nvim-lua'},     -- Optional
+    -- Autocompletion & code snippets
+    use('hrsh7th/nvim-cmp')         -- Completion engine
+    use('hrsh7th/cmp-nvim-lsp')     -- Ensure compatibility with lsp servers so they appear in autocompletion
+    use('hrsh7th/cmp-buffer')       -- Enables autocomplete for current buffer
+    use('hrsh7th/cmp-path')         -- Enables autocomplete for file system
 
-			-- Snippets
-			{'L3MON4D3/LuaSnip'},             -- Required
-			{'rafamadriz/friendly-snippets'}, -- Optional
-		}
-	}
+    use("L3MON4D3/LuaSnip")         -- Snippet engine
+    use("saadparwaiz1/cmp_luasnip") -- Luasnip completion source for cmp
+    use("hrsh7th/cmp-nvim-lua")     -- complete vim lua configs
+
+    use("rafamadriz/friendly-snippets") -- Adds VSCode like snippets
+
+    -- LSP 
+    use {
+        "williamboman/mason.nvim",
+        "williamboman/mason-lspconfig.nvim",
+        "neovim/nvim-lspconfig",
+        { "glepnir/lspsaga.nvim", branch = "main" }, -- enhanced UIs to LSP experience
+        "onsails/lspkind.nvim" -- Add VSCode like icons to autocompletion window 
+    }
+    use 'ray-x/go.nvim'
     -- Status Bar
     use {
         'nvim-lualine/lualine.nvim',
