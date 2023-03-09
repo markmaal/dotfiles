@@ -8,12 +8,38 @@ if not cmp_nvim_lsp_status then
   return
 end
 
+local mason_status, mason = pcall(require, "mason")
+if not mason_status then
+    return
+end
+
+local mason_lspconfig_status, mason_lspconfig = pcall(require, "mason-lspconfig")
+if not mason_lspconfig_status then
+    return
+end
+
+-- MASON SETUP --
+mason.setup()
+mason_lspconfig.setup({
+    ensure_installed = {
+        "tsserver",
+        "html",
+        "cssls",
+        "tailwindcss",
+        "lua_ls",
+        "gopls"
+    },
+    automatic_installation = true,
+})
+-- END MASON SETUP --
+--
 -- enable keybinds only for when lsp server available
 local on_attach = function(client, bufnr)
   -- keybind options
   local opts = { noremap = true, silent = true, buffer = bufnr }
 
   -- set keybinds
+  -- using lspsaga
   vim.keymap.set("n", "gf", "<cmd>Lspsaga lsp_finder<CR>", opts) -- show definition, references
   vim.keymap.set("n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", opts) -- got to declaration
   vim.keymap.set("n", "gd", "<cmd>Lspsaga peek_definition<CR>", opts) -- see definition and make edits in window
@@ -36,41 +62,16 @@ for type, icon in pairs(signs) do
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
 end
 
--- configure html server
-lspconfig["html"].setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-})
+-- Configure all installed LSP servers --
+local installed_lsp_servers = mason_lspconfig.get_installed_servers()
+for _, server_name in ipairs(installed_lsp_servers) do
+    lspconfig[server_name].setup({
+        on_attach = on_attach,
+        capabilities = capabilities,
+    })
+end
 
--- configure css server
-lspconfig["cssls"].setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-})
-
--- configure tailwindcss server
-lspconfig["tailwindcss"].setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-})
-
--- configure emmet language server
-lspconfig["emmet_ls"].setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-  filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
-})
-
--- configure go server
-lspconfig["gopls"].setup({
-    capabilities = capabilities,
-    on_attach = on_attach,
-})
-
--- configure python server
-lspconfig["pyright"].setup({})
-
--- configure lua server (with special settings)
+-- Configure specific LSP servers --
 lspconfig["lua_ls"].setup({
   capabilities = capabilities,
   on_attach = on_attach,
@@ -90,3 +91,11 @@ lspconfig["lua_ls"].setup({
     },
   },
 })
+--
+-- configure emmet language server
+lspconfig["emmet_ls"].setup({
+  capabilities = capabilities,
+  on_attach = on_attach,
+  filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
+})
+

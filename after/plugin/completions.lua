@@ -14,18 +14,26 @@ if not luasnip_status then
 end
 
 -- Load friendly snippets
+local luasnip = require('luasnip')
+luasnip.config.set_config({
+  region_check_events = 'InsertEnter',
+  delete_check_events = 'InsertLeave'
+})
+
 require("luasnip/loaders/from_vscode").lazy_load()
 
 vim.opt.completeopt = "menu,menuone,noselect"
 cmp.setup({
+    sources = cmp.config.sources({
+        { name = "luasnip" }, -- snippets
+        { name = "buffer" }, -- text within current buffer
+        { name = "path" }, -- file system paths
+        { name = "nvim_lua" },
+        { name = "nvim_lsp" },
+    }),
     formatting = {
-        format = lspkind.cmp_format({
-            mode = "symbol_text",
-            maxwidth = 50,
-            before = function(entry, vim_item)
-                return vim_item
-            end
-        })
+        fields = {'abbr', 'menu', 'kind'},
+        format = lspkind.cmp_format({ with_text = true, maxwidth = 30 })
     },
     snippet = {
         expand = function(args)
@@ -40,12 +48,22 @@ cmp.setup({
         ["<C-Space>"] = cmp.mapping.complete(),
         ["<C-e>"] = cmp.mapping.abort(),
         ["<CR>"] = cmp.mapping.confirm({ select = false }),
-    }),
-    sources = cmp.config.sources({
-        { name = "luasnip" }, -- snippets
-        { name = "buffer" }, -- text within current buffer
-        { name = "path" }, -- file system paths
-        { name = "nvim_lua" },
-        { name = "nvim_lsp" },
+        ["<Tab>"] = cmp.mapping(function(fallback)
+            local col = vim.fn.col('.') - 1
+            if cmp.visible() then
+                cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+            elseif col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
+                fallback()
+            else
+                cmp.complete()
+            end
+        end, {'i', 's'}),
+        ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+                cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
+            else
+                fallback()
+            end
+        end, {'i', 's'}),
     }),
 })

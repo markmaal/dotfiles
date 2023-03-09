@@ -27,6 +27,7 @@ return require('packer').startup(function(use)
     use {
         'lewis6991/gitsigns.nvim',
         -- tag = 'release' -- To use the latest release (do not use this if you run Neovim nightly or dev builds!)
+    -- Easy commentign
     }
     use {
         'numToStr/Comment.nvim',
@@ -55,7 +56,10 @@ return require('packer').startup(function(use)
         { "glepnir/lspsaga.nvim", branch = "main" }, -- enhanced UIs to LSP experience
         "onsails/lspkind.nvim" -- Add VSCode like icons to autocompletion window 
     }
+
+    -- Enhanced Go functionality
     use 'ray-x/go.nvim'
+
     -- Status Bar
     use {
         'nvim-lualine/lualine.nvim',
@@ -64,4 +68,5 @@ return require('packer').startup(function(use)
     use 'nvim-tree/nvim-web-devicons'
     use 'sharkdp/fd'
     use 'glepnir/dashboard-nvim'
+    use 'akinsho/nvim-bufferline.lua'
 end)
