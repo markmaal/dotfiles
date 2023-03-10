@@ -13,10 +13,7 @@ return require('packer').startup(function(use)
 		requires = { {'nvim-lua/plenary.nvim'} }
 	}
 	-- Theme
-    use({
-        'rose-pine/neovim',
-        as = 'rose-pine',
-    })
+    use { "rose-pine/neovim", as = "rose-pine" }
 	-- Syntax Highlighting / Formatting
 	use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
 	-- Change tree
@@ -27,6 +24,13 @@ return require('packer').startup(function(use)
     use {
         'lewis6991/gitsigns.nvim',
         -- tag = 'release' -- To use the latest release (do not use this if you run Neovim nightly or dev builds!)
+    }
+    use {
+        'nvim-tree/nvim-tree.lua',
+        requires = {
+            'nvim-tree/nvim-web-devicons', -- optional, for file icons
+        },
+        tag = 'nightly' -- optional, updated every week. (see issue #1193)
     }
     -- LSP autocomplete, definition lookups, the good good
 	use {
@@ -70,5 +74,6 @@ return require('packer').startup(function(use)
     }
     use 'nvim-tree/nvim-web-devicons'
     use 'sharkdp/fd'
+    use 'onsails/lspkind.nvim'
     use 'glepnir/dashboard-nvim'
 end)

@@ -3,18 +3,44 @@ local lsp = require('lsp-zero').preset({
   set_lsp_keymaps = false, -- Using Lspsaga instead, see below
   manage_nvim_cmp = true,
   suggest_lsp_servers = true,
-  sign_icons = signs,
+  sign_icons = { error = " ", warn = " ", hint = "ﴞ ", info = " " },
 })
-local signs = { error = " ", warn = " ", hint = "ﴞ ", info = " " }
 
+-- Setup LSPKind symbols for autocomplete boxes
+lsp.setup_nvim_cmp({
+    formatting = {
+        format = require("lspkind").cmp_format({
+            mode = "symbol",
+            maxwidth = 20,
+            ellipsis_char = '..',
+            menu = ({
+                nvim_lsp = '[LSP]',
+                emoji = '[Emoji]',
+                path = '[Path]',
+                calc = '[Calc]',
+                vsnip = '[Snippet]',
+                luasnip = '[Snippet]',
+                buffer = '[Buffer]',
+                tmux = '[TMUX]',
+                treesitter = '[TreeSitter]',
+            })
+        }),
+    },
+});
+
+-- Setup LSP Keybindings --
 -- enable keybinds only for when lsp server available
 lsp.on_attach(function(client, bufnr)
   -- keybind options
-  local opts = { noremap = true, silent = true, buffer = bufnr }
 
   -- set keybinds
   -- using lspsaga
-  vim.keymap.set("n", "gf", "<cmd>Lspsaga lsp_finder<CR>", opts) -- show definition, references
+  local describe = function(mode, key, cmd, desc)
+      local opts = { noremap = true, silent = true, buffer = bufnr, desc = desc }
+      vim.keymap.set(mode, key, cmd, opts) 
+  end
+
+  describe("n", "gf", "<cmd>Lspsaga lsp_finder<CR>", "[g]o [f]ind") -- show definition, references
   vim.keymap.set("n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", opts) -- got to declaration
   vim.keymap.set("n", "gd", "<cmd>Lspsaga peek_definition<CR>", opts) -- see definition and make edits in window
   vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts) -- go to implementation
@@ -29,4 +55,17 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("n", "<leader>o", "<cmd>LSoutlineToggle<CR>", opts) -- see outline on right hand side
 end)
 
+
+-- Setup LSP servers if needed --
+lsp.configure('lua-language-server', {
+    settings = {
+        Lua = {
+            diagnostics = {
+                globals = {
+                    'vim'
+                }
+            }
+        }
+    }
+})
 lsp.setup()

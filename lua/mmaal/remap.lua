@@ -3,8 +3,6 @@ local term_opts = { silent = true }
 -- Use space as our leader key
 vim.g.mapleader = " "
 
--- To quickly get into Netrw
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex, opts)
 -- Do not yank with x
 vim.keymap.set("n", "x", "\"_x", opts)
 
