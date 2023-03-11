@@ -57,7 +57,7 @@ end)
 
 
 -- Setup LSP servers if needed --
-lsp.configure('lua-language-server', {
+lsp.configure('lua_ls', {
     settings = {
         Lua = {
             diagnostics = {

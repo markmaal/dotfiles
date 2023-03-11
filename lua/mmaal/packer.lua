@@ -12,6 +12,19 @@ return require('packer').startup(function(use)
 		-- or                            , branch = '0.1.x',
 		requires = { {'nvim-lua/plenary.nvim'} }
 	}
+    use {
+        "nvim-telescope/telescope-file-browser.nvim",
+        requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
+    }
+    -- Better tabs
+    use({
+        'akinsho/bufferline.nvim',
+        event = 'ColorScheme',
+        config = function()
+            local highlights = require('rose-pine.plugins.bufferline')
+            require('bufferline').setup({ highlights = highlights })
+        end
+    })
 	-- Theme
     use { "rose-pine/neovim", as = "rose-pine" }
 	-- Syntax Highlighting / Formatting
@@ -76,4 +89,5 @@ return require('packer').startup(function(use)
     use 'sharkdp/fd'
     use 'onsails/lspkind.nvim'
     use 'glepnir/dashboard-nvim'
+    use 'ray-x/go.nvim'
 end)
