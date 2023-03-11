@@ -6,7 +6,7 @@ vim.g.loaded_netrwPlugin = 1
 
 -- To quickly get into Netrw
 local opts = { noremap = true, silent = true }
-vim.keymap.set("n", "<leader>pv", "<cmd>NvimTreeToggle<CR>", opts)
+vim.keymap.set("n", ";e", "<cmd>NvimTreeToggle<CR>", opts)
 
 nvimtree.setup({
     actions = {
