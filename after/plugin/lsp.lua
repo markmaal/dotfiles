@@ -37,7 +37,7 @@ lsp.on_attach(function(client, bufnr)
   -- using lspsaga
   local describe = function(mode, key, cmd, desc)
       local opts = { noremap = true, silent = true, buffer = bufnr, desc = desc }
-      vim.keymap.set(mode, key, cmd, opts) 
+      vim.keymap.set(mode, key, cmd, opts)
   end
 
   describe("n", "gf", "<cmd>Lspsaga lsp_finder<CR>", "[g]o [f]ind") -- show definition, references
@@ -68,4 +68,43 @@ lsp.configure('lua_ls', {
         }
     }
 })
+
 lsp.setup()
+
+local null_ls = require('null-ls')
+local null_opts = lsp.build_options('null-ls', {
+    on_attach = function(client)
+        if client.resolved_capabilities.document_formatting then
+            vim.api.nvim_create_autocmd("BufWritePre", {
+                desc = "Auto Formatting before save",
+                pattern = "<buffer>",
+                callback = vim.lsp.buf.formatting_sync,
+            })
+        end
+    end
+})
+
+
+
+null_ls.setup({
+    on_attach = function(client, bufnr)
+        null_opts.on_attach(client, bufnr)
+    end,
+    sources = {
+        null_ls.builtins.formatting.prettier,
+        null_ls.builtins.diagnostics.eslint,
+        -- add tools not supported by mason.nvim here
+    }
+})
+
+require('mason-null-ls').setup({
+    ensure_installed = nil,
+    automatic_installation = true,
+    automatic_setup = true,
+})
+
+require('mason-null-ls').setup_handlers()
+
+vim.diagnostic.config({
+    virtual_text = true,
+})

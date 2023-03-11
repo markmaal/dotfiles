@@ -68,6 +68,8 @@ return require('packer').startup(function(use)
 			{'rafamadriz/friendly-snippets'}, -- Optional
 		}
 	}
+    use("jose-elias-alvarez/null-ls.nvim")
+    use("jay-babu/mason-null-ls.nvim")
     use({
         "glepnir/lspsaga.nvim",
         branch = "main",
