@@ -11,6 +11,7 @@ return {
 		"williamboman/mason-lspconfig.nvim",
 		config = function()
 			require("mason-lspconfig").setup({
+				automatic_enable = false,
 				ensure_installed = { "lua_ls", "gopls", "pylsp", "ts_ls" },
 			})
 		end,
@@ -20,13 +21,14 @@ return {
 		config = function()
 			local lspconfig = require("lspconfig")
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
-			local mason_registry = require("mason-registry")
 
-			local vue_language_server_path = mason_registry.get_package("vue-language-server"):get_install_path()
-				.. "\\node_modules\\@vue\\language-server"
+			-- broken after mason 2.0, will fix when i try vue again
+			-- local vue_language_server_path = mason_registry.get_package("vue-language-server"):get_install_path()
+			-- .. "\\node_modules\\@vue\\language-server"
+			local vue_language_server_path = vim.fn.expand("$MASON/packages/vue-language-server")
 
-			local angularls_path = mason_registry.get_package("angular-language-server"):get_install_path()
-
+			local angularls_path = vim.fn.expand("$MASON/packages/angular-language-server")
+			print(angularls_path)
 			local cmd = {
 				"ngserver",
 				"--stdio",
