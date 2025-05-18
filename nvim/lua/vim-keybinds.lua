@@ -7,7 +7,7 @@ local term_opts = { silent = true }
 -- Convenient exit bind
 vim.keymap.set("i", "jk", "<esc>", opts)
 -- Do not yank with x
-vim.keymap.set("n", "x", "\"_x", opts)
+vim.keymap.set("n", "x", '"_x', opts)
 
 -- New Tab & Window Splitting
 vim.keymap.set("n", "te", ":tabedit<Return>", term_opts)
@@ -36,20 +36,24 @@ vim.keymap.set("n", "sl", "<C-w>l", opts)
 -- Visual --
 -- Stay in indent mode
 vim.keymap.set("v", "<", "<gv", opts)
--- Move text up and down 
+-- Move text up and down
 vim.keymap.set("v", ">", ">gv", opts)
 
--- Move text around and auto indent 
+-- Move text around and auto indent
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", opts)
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", opts)
 
 -- Stop yank filling buffer
-vim.keymap.set("v", "p", "\"_dP", opts)
+vim.keymap.set("v", "p", '"_dP', opts)
 
 -- Yank into system register
-vim.keymap.set("n", "<leader>y", "\"+y")
-vim.keymap.set("v", "<leader>y", "\"+y")
-vim.keymap.set("n", "<leader>Y", "\"+Y")
+vim.keymap.set("n", "<leader>y", '"+y')
+vim.keymap.set("v", "<leader>y", '"+y')
+vim.keymap.set("n", "<leader>Y", '"+Y') -- same as yy
+
+-- Paste from system register
+vim.keymap.set("n", "<leader>p", '"+p')
+
 -- Keep search terms in the middle
 vim.keymap.set("n", "n", "nzzzv", opts)
 vim.keymap.set("n", "N", "Nzzzv", opts)
