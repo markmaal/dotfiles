@@ -22,6 +22,22 @@ return {
             local lspconfig = require("lspconfig")
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
+            local on_attach = function(client, bufnr)
+                local exclude_formatting = {
+                    "ts_ls",
+                    "html",
+                    "cssls",
+                    "luals",
+                    "pyright",
+                    "yamlls",
+                    "marksman",
+                    "jsonls",
+                }
+                if vim.tbl_contains(exclude_formatting, client.name) then
+                    client.server_capabilities.documentFormattingProvider = false
+                end
+            end
+
             local vue_language_server_path = vim.fn.expand("$MASON/packages/vue-language-server")
             local angularls_path = vim.fn.expand("$MASON/packages/angular-language-server")
 
@@ -40,6 +56,15 @@ return {
                 }, ","),
             }
 
+            lspconfig.eslint.setup({
+                filetypes = { "typescript", "javascript" },
+                settings = {
+                    workingDirectory = { mode = "auto" },
+                    format = { enable = false },
+                    lint = { enable = true },
+                },
+            })
+
             lspconfig.angularls.setup({
                 cmd = cmd,
                 on_new_config = function(new_config)
@@ -52,6 +77,7 @@ return {
             -- TS / Vue --
             lspconfig.ts_ls.setup({
                 capabilities = capabilities,
+                on_attach = on_attach,
                 init_options = {
                     plugins = { -- I think this was my breakthrough that made it work
                         {
