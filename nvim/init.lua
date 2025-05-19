@@ -1,6 +1,5 @@
 -- Lazy, we use this to manage plugins
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-vim.print(lazypath)
 if not vim.loop.fs_stat(lazypath) then
 	vim.fn.system({
 		"git",
