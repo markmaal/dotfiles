@@ -1,5 +1,16 @@
 local M = {}
 
+function M.kanso()
+	return {
+		"webhooked/kanso.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			vim.cmd.colorscheme("kanso-zen")
+		end,
+	}
+end
+
 function M.catppuccin()
 	return {
 		"catppuccin/nvim",
@@ -23,4 +34,4 @@ function M.tokyonight()
 	}
 end
 
-return M.tokyonight()
+return M.kanso()
