@@ -12,6 +12,6 @@ return {
             close_if_last_window = true,
             auto_clean_after_session_restore = true,
         })
-        vim.keymap.set("n", "<C-n>", ":Neotree toggle<CR>", {})
+        vim.keymap.set("n", "<C-n>", ":Neotree reveal<CR>", {})
     end,
 }
