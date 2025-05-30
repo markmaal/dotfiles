@@ -1,7 +1,11 @@
+function isUNIX()
+	return vim.fn.has("macunix") == 1
+end
+
 return {
 	{
 		"nvim-neotest/neotest",
-		event = { "BufReadPost", "BufNewFile" },
+		ent = { "BufReadPost", "BufNewFile" },
 		dependencies = {
 			"nvim-neotest/nvim-nio",
 			"nvim-lua/plenary.nvim",
@@ -14,24 +18,82 @@ return {
 		},
 
 		keys = {
-			{ "<leader>ta", "<cmd>lua require('neotest').run.attach()<cr>", desc = "Attach to the nearest test" },
-			{ "<leader>tl", "<cmd>lua require('neotest').run.run_last()<cr>", desc = "Toggle Test Summary" },
 			{
-				"<leader>to",
-				"<cmd>lua require('neotest').output_panel.toggle()<cr>",
-				desc = "Toggle Test Output Panel",
+				"<leader>ta",
+				function()
+					require("neotest").run.attach()
+				end,
+				desc = "Attach",
 			},
-			{ "<leader>tp", "<cmd>lua require('neotest').run.stop()<cr>", desc = "Stop the nearest test" },
-			{ "<leader>ts", "<cmd>lua require('neotest').summary.toggle()<cr>", desc = "Toggle Test Summary" },
-			{ "<leader>tt", "<cmd>lua require('neotest').run.run()<cr>", desc = "Run the nearest test" },
+			{
+				"<leader>tf",
+				function()
+					require("neotest").run.run(vim.fn.expand("%"))
+				end,
+				desc = "Run File",
+			},
+			{
+				"<leader>tA",
+				function()
+					require("neotest").run.run(vim.uv.cwd())
+				end,
+				desc = "Run All Test Files",
+			},
 			{
 				"<leader>tT",
-				"<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<cr>",
-				desc = "Run test the current file",
+				function()
+					require("neotest").run.run({ suite = true })
+				end,
+				desc = "Run Test Suite",
+			},
+			{
+				"<leader>tn",
+				function()
+					require("neotest").run.run()
+				end,
+				desc = "Run Nearest",
+			},
+			{
+				"<leader>tl",
+				function()
+					require("neotest").run.run_last()
+				end,
+				desc = "Run Last",
+			},
+			{
+				"<leader>ts",
+				function()
+					require("neotest").summary.toggle()
+				end,
+				desc = "Toggle Summary",
+			},
+			{
+				"<leader>to",
+				function()
+					require("neotest").output.open({ enter = true, auto_close = true })
+				end,
+				desc = "Show Output",
+			},
+			{
+				"<leader>tO",
+				function()
+					require("neotest").output_panel.toggle()
+				end,
+				desc = "Toggle Output Panel",
+			},
+			{
+				"<leader>tt",
+				function()
+					require("neotest").run.stop()
+				end,
+				desc = "Terminate",
 			},
 			{
 				"<leader>td",
 				function()
+					vim.cmd("Neotree close")
+					require("neotest").summary.close()
+					require("neotest").output_panel.close()
 					require("neotest").run.run({ suite = false, strategy = "dap" })
 				end,
 				desc = "Debug nearest test",
@@ -52,8 +114,15 @@ return {
 			require("neotest").setup({
 				adapters = {
 					require("neotest-jest")({
-						jestCommand = "npm test --",
-						jestConfigFile = "custom.jest.config.ts",
+						jestCommand = require("neotest-jest.jest-util").getJestCommand(vim.fn.expand("%:p:h")),
+						jestConfigFile = function()
+							local file = vim.fn.expand("%:p")
+							if string.find(file, "/(app/") then
+								return string.match(file, "(.~/[^/]+/)src") .. "jest.config.js"
+							end
+							return vim.fn.getcwd() .. "/jest.config.ts"
+						end,
+
 						env = { CI = true },
 						cwd = function(path)
 							return vim.fn.getcwd()
@@ -64,7 +133,9 @@ return {
 					}),
 					require("neotest-python"),
 					require("neotest-golang")({
-						runner = "gotestsum",
+						runner = isUNIX() and "go" or "gotestsum",
+						-- runner = "go",
+						-- go runner doesnt work on windows for some reason
 						go_test_args = {
 							"-v",
 							"-count=1",
