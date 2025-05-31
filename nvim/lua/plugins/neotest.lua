@@ -2,10 +2,13 @@ function isUNIX()
 	return vim.fn.has("macunix") == 1
 end
 
+---@type table<string, string>
+local neotest_adapters = {}
+
 return {
 	{
 		"nvim-neotest/neotest",
-		ent = { "BufReadPost", "BufNewFile" },
+		event = { "BufReadPost", "BufNewFile" },
 		dependencies = {
 			"nvim-neotest/nvim-nio",
 			"nvim-lua/plenary.nvim",
@@ -16,7 +19,6 @@ return {
 			"nvim-neotest/neotest-vim-test",
 			{ "fredrikaverpil/neotest-golang", version = "*" },
 		},
-
 		keys = {
 			{
 				"<leader>ta",
@@ -28,6 +30,7 @@ return {
 			{
 				"<leader>tf",
 				function()
+					print(neotest_adapters[vim.bo.filetype])
 					require("neotest").run.run(vim.fn.expand("%"))
 				end,
 				desc = "Run File",
@@ -113,37 +116,58 @@ return {
 			}, neotest_ns)
 			require("neotest").setup({
 				adapters = {
-					require("neotest-jest")({
-						jestCommand = require("neotest-jest.jest-util").getJestCommand(vim.fn.expand("%:p:h")),
-						jestConfigFile = function()
-							local file = vim.fn.expand("%:p")
-							if string.find(file, "/(app/") then
-								return string.match(file, "(.~/[^/]+/)src") .. "jest.config.js"
-							end
-							return vim.fn.getcwd() .. "/jest.config.ts"
-						end,
-
-						env = { CI = true },
-						cwd = function(path)
-							return vim.fn.getcwd()
-						end,
-					}),
-					require("neotest-vim-test")({
-						ignore_file_types = { "python", "vim", "lua", "js", "ts" },
-					}),
-					require("neotest-python"),
-					require("neotest-golang")({
-						runner = isUNIX() and "go" or "gotestsum",
-						-- runner = "go",
-						-- go runner doesnt work on windows for some reason
-						go_test_args = {
-							"-v",
-							"-count=1",
-							"-coverprofile=" .. vim.fn.getcwd() .. "/coverage.out",
-						},
-					}),
+					-- require("neotest-jest")({
+					-- }),
+					-- require("neotest-vim-test")({
+					--     ignore_file_types = { "python", "vim", "lua", "js", "ts" },
+					-- }),
+					-- require("neotest-python"),
+					-- require("neotest-golang")({
+					--     runner = isUNIX() and "go" or "gotestsum",
+					--     -- runner = "go",
+					--     -- go runner doesnt work on windows for some reason
+					--     go_test_args = {
+					--         "-v",
+					--         "-count=1",
+					--         "-coverprofile=" .. vim.fn.getcwd() .. "/coverage.out",
+					--     },
+					-- }),
 				},
 			})
+		end,
+	},
+	{
+		"nvim-neotest/neotest-jest",
+		lazy = true,
+		dependencies = { "nvim-neotest/neotest" },
+		init = function()
+			for _, filetype in ipairs({
+				"javascript",
+				"typescript",
+				"javascriptreact",
+				"typescriptreact",
+			}) do
+				neotest_adapters[filetype] = "neotest-jest"
+			end
+		end,
+		opts = {},
+		config = function(_, opts)
+			local adapter = require("neotest-jest")({
+				jestCommand = require("neotest-jest.jest-util").getJestCommand(vim.fn.expand("%:p:h")),
+				jestConfigFile = function()
+					local file = vim.fn.expand("%:p")
+					if string.find(file, "/(app/") then
+						return string.match(file, "(.~/[^/]+/)src") .. "jest.config.js"
+					end
+					return vim.fn.getcwd() .. "/jest.config.ts"
+				end,
+				env = { CI = true },
+				cwd = function(path)
+					return vim.fn.getcwd()
+				end,
+			})
+			local adapters = require("neotest.config").adapters
+			table.insert(adapters, adapter)
 		end,
 	},
 	{
