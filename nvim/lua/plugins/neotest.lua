@@ -130,7 +130,7 @@ return {
                         jestCommand = require("neotest-jest.jest-util").getJestCommand(vim.fn.expand("%:p:h")),
                         jestConfigFile = function()
                             local file = vim.fn.expand("%:p")
-                            if string.find(file, "/(app/") then
+                            if string.find(file, "/(services|apps|libs)/") then -- for nx monorepos
                                 return string.match(file, "(.~/[^/]+/)src") .. "jest.config.js"
                             end
                             return vim.fn.getcwd() .. "/jest.config.ts"
