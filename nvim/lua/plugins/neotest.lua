@@ -163,6 +163,10 @@ return {
                 })
             )
             require("neotest").setup({
+                discovery = {
+                    enabled = false, -- turned off because it's slooooow in big projects
+                    concurrent = 1,
+                },
                 adapters = adapters,
             })
         end,
